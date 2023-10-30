@@ -9,51 +9,39 @@ output: html_document
 library(dplyr)
 
 future_collection<-read_csv('all_commodities_futures_collection.csv')
-```
 
-```{r}
-
- ggplot(data = agricultural_collection,
-       mapping = aes( x= low , y = high)) +
-         geom_point(mapping = aes( color = category, shape = category)) +
-         geom_smooth( method = "lm")+
-         labs(title = "Future Commodies Movement",
-           x = "Low", y = "High")
-        
-      
+future_collection<-future_collection%>%na.omit()
 ```
 
 
 ```{r}
-agricultural_collection<-future_collection%>%
-  filter( category == "agricultural commodities")
-
-```
-
-
-
-```{r}
-future_collection%>%
-  group_by(category)  %>%
-  summarise(
-    n = n(),
-    volume = mean(volume, na.rm = TRUE)
-  ) %>%
-  filter(
-    n >1,
-  )
+head(future_collection)
 ```
 
 ```{r}
-future_collection%>%
-  filter(category == "fossil fuels", date>= 2022-01-01)
 
+future_collection <- future_collection %>%
+  select(commodity, category,date, open, high, low, close, volume)
 
+future_collection$date <- as.Date(future_collection$date)
+summary(future_collection)
 
-  
-  arrange(desc(volume))%>%
-  select(commodity,category,date, volume)
+ggplot(future_collection, aes(x= date, y=close)) +
+  geom_line() +
+  labs (title = "Commodities Prices over time", x = "Date", y = "Close")
 ```
+
+
+```{r}
+#basic forecasting
+
+install.packages("TTR")
+library(TTR)
+future_collection$SMA_30 <- SMA(future_collection$close, n= 50)
+```
+
+
+
 
 
 
