@@ -5,43 +5,59 @@ date: "2023-10-27"
 output: html_document
 ---
 
+
+
 ```{r}
+library(tidyr)
+library(tidyverse)
+library(readr)
+library(dplyr)
+library(ggplot2)
+```
+
+```{r}
+
+future_collection<-read_csv("all_commodities_futures_collection.csv")
+
+#Summarise cases
+spec(future_collection)
+
+#count number of rows in each group defined by the variables in,... tally(), add_count(), add_tally()
+
+count(future_collection)
+```
+
+```{r}
+#group cases,use group by to create a grouped copy of table grouped columns in dplyr functions will manipulate each group separately and combine the results.
+
+future_collection%>%
+  group_by(category)%>%
+  summarise(avg=mean(high))
+
+
+#rowwise
+
+future_collection%>%
+  rowwise()%>%
+  mutate(lean_hogs = length(animal_products))
+
+```
+
+```{r}
+#applying function 
+
 library(dplyr)
 
-future_collection<-read_csv('all_commodities_futures_collection.csv')
-
-future_collection<-future_collection%>%na.omit()
-```
+df<- read_csv("all_commodities_Futures_collection.csv")
 
 
-```{r}
-head(future_collection)
+
 ```
 
 ```{r}
 
-future_collection <- future_collection %>%
-  select(commodity, category,date, open, high, low, close, volume)
-
-future_collection$date <- as.Date(future_collection$date)
-summary(future_collection)
-
-ggplot(future_collection, aes(x= date, y=close)) +
-  geom_line() +
-  labs (title = "Commodities Prices over time", x = "Date", y = "Close")
+cocoa_data<-read_csv("cocoa_data.csv")
 ```
-
-
-```{r}
-#basic forecasting
-
-install.packages("TTR")
-library(TTR)
-future_collection$SMA_30 <- SMA(future_collection$close, n= 50)
-```
-
-
-
 
 
 
