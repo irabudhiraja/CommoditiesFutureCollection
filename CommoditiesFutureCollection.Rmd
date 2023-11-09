@@ -27,38 +27,34 @@ spec(future_collection)
 count(future_collection)
 ```
 
-```{r}
-#group cases,use group by to create a grouped copy of table grouped columns in dplyr functions will manipulate each group separately and combine the results.
-
-future_collection%>%
-  group_by(category)%>%
-  summarise(avg=mean(high))
-
-
-#rowwise
-
-future_collection%>%
-  rowwise()%>%
-  mutate(lean_hogs = length(animal_products))
-
-```
-
-```{r}
-#applying function 
-
-library(dplyr)
-
-df<- read_csv("all_commodities_Futures_collection.csv")
-
-
-
-```
 
 ```{r}
 
-cocoa_data<-read_csv("cocoa_data.csv")
+future_collection_Animal_Products<-future_collection%>%
+  filter(category == "Animal Products")%>%
+  select(commodity, category, date, open, high, low, close, volume)
+
+future_collection_Animal_Products%>%
+  ggplot(aes(x=commodity))+
+    geom_bar()
+ 
 ```
 
 
 
+```{r}
+
+Cocoa_data%>%
+  ggplot(aes(x= date, y = high))+
+  geom_point()
+
+
+```
+
+
+```{r}
+
+ggplot(future_collection_Animal_Products, aes(x = volume))+
+  geom_histogram()
+```
 
